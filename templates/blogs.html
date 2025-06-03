@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Blogs - Blog Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="{{ url_for('index') }}">
+                    <span class="rocket-icon">🚀</span> Blog Management System
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('write_blog') }}">Write a Blog</a>
+                {% if session.logged_in %}
+                    {% if session.is_admin %}
+                        <a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
+                    {% endif %}
+                    <a href="{{ url_for('logout') }}">Logout ({{ session.username }})</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Login</a>
+                    <a href="{{ url_for('register') }}">Register</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="blogs-container">
+            <div class="blogs-header">
+                <a href="{{ url_for('index') }}" class="back-btn btn btn-secondary">
+                    <span class="icon">🔙</span> Back
+                </a>
+                <h2>
+                    <span class="icon">📚</span> All Blogs
+                </h2>
+            </div>
+
+            <div class="search-filter-container">
+                <form action="{{ url_for('view_blogs') }}" method="get" class="search-form">
+                    <div class="search-input">
+                        <input type="text" name="search" placeholder="Search..." value="{{ search_query }}">
+                        <button type="submit" class="search-btn">
+                            <span class="icon">🔍</span>
+                        </button>
+                    </div>
+                    <div class="filter-dropdown">
+                        <select name="domain" onchange="this.form.submit()">
+                            <option value="All" {% if current_domain == 'All' %}selected{% endif %}>All</option>
+                            {% for domain in domains %}
+                                <option value="{{ domain }}" {% if current_domain == domain %}selected{% endif %}>{{ domain }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            <div class="blogs-grid">
+                {% if blogs %}
+                    {% for blog in blogs %}
+                        <div class="blog-card">
+                            <div class="blog-image">
+                                {% if blog.image_path %}
+                                    <img src="{{ url_for('static', filename=blog.image_path) }}" alt="{{ blog.title }}">
+                                {% else %}
+                                    <div class="no-image">No Image</div>
+                                {% endif %}
+                            </div>
+                            <div class="blog-content">
+                                <h3 class="blog-title">{{ blog.title }}</h3>
+                                <p class="blog-author">By {{ blog.author }}</p>
+                                <div class="blog-meta">
+                                    <span class="blog-domain">{{ blog.domain }}</span>
+                                    <span class="blog-date">{{ blog.created_at }}</span>
+                                </div>
+                                <div class="blog-preview">
+                                    {{ blog.content[:150] }}{% if blog.content|length > 150 %}...{% endif %}
+                                </div>
+                                <a href="{{ url_for('view_blog', blog_id=blog.id) }}" class="btn btn-read-more">Read More</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="no-blogs-message">
+                        <p>No blogs found. Be the first to <a href="{{ url_for('write_blog') }}">write a blog</a>!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Blog Management System. All rights reserved.</p>
+    </footer>
+</body>
+</html>

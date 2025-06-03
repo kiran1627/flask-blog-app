@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="{{ url_for('index') }}">
+                    <span class="rocket-icon">🚀</span> Blog Management System
+                </a>
+            </div>
+            <div class="nav-links">
+                {% if session.logged_in %}
+                    <a href="{{ url_for('write_blog') }}">Write a Blog</a>
+                    <a href="{{ url_for('view_blogs') }}">View Blogs</a>
+                    {% if session.is_admin %}
+                        <a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
+                    {% endif %}
+                    <a href="{{ url_for('logout') }}">Logout ({{ session.username }})</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Login</a>
+                    <a href="{{ url_for('register') }}">Register</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="hero-section">
+            <h1>Blog Management System</h1>
+            <p class="tagline">Innovate. Inspire. Impact...Empowering Innovation Through Project Stories... Simplify blogging with intelligent domain filtering, real-time insights.</p>
+            
+            <div class="cta-buttons">
+                <a href="{{ url_for('write_blog') }}" class="cta-button primary">
+                    <span class="btn-icon">✏️</span> Write a Blog
+                </a>
+                <a href="{{ url_for('view_blogs') }}" class="cta-button secondary">
+                    <span class="btn-icon">📚</span> View Blogs
+                </a>
+            </div>
+        </div>
+
+        <section class="features">
+            <h2 class="section-title">
+                <span class="light-bulb">💡</span> Why Choose Us?
+            </h2>
+            
+            <div class="feature-cards">
+                <div class="feature-card">
+                    <h3>AI-Enhanced Blog Creation</h3>
+                    <p>Create content faster with smart suggestions, tag generation, and more.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Instant Domain Filtering</h3>
+                    <p>Find blogs easily based on Healthcare, Education, Finance, and more.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Elegant and User-Friendly UI</h3>
+                    <p>Enjoy a clean interface with intuitive navigation and fast performance.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Blog Management System. All rights reserved.</p>
+    </footer>
+</body>
+</html>
