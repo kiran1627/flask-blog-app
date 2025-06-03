@@ -283,4 +283,5 @@ def delete_user(user_id):
     return redirect(url_for('admin_dashboard'))
 
 if __name__ == '__main__':
-    app.run(debug=True, port=3000)
+    app.run(debug=False, host='0.0.0.0', port=10000)
+
